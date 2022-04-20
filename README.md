@@ -24,5 +24,9 @@ At the time of this project each board is ~$7 dollars. It is a development board
 The ESP8266 board can be programmed with the Arduino IDE 
 
 Steps:
-1. Programming with Arduino IDE
-	A. Install Arduino IDE  from https://www.arduino.cc/en/software Or grab altest version.
+Programming with Arduino IDE
+	1. Install Arduino IDE  from https://www.arduino.cc/en/software Or grab altest version.
+	2. Go to File -> Preferences to open the below dialog box. In the “Additional Board managers URL” paste "http://arduino.esp8266.com/stable/package_esp8266com_index.json". Then press OK.
+	3. go to Tool -> Boards -> Board Managers. Search for ESP8266 by esp8266 community and install
+	4. go to Tools -> Boards -> ESP8266 Boards -> NodeMCU 1.0 (ESP-12E Module)
+	
