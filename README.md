@@ -29,4 +29,13 @@ Programming with Arduino IDE
 	2. Go to File -> Preferences to open the below dialog box. In the “Additional Board managers URL” paste "http://arduino.esp8266.com/stable/package_esp8266com_index.json". Then press OK.
 	3. go to Tool -> Boards -> Board Managers. Search for ESP8266 by esp8266 community and install
 	4. go to Tools -> Boards -> ESP8266 Boards -> NodeMCU 1.0 (ESP-12E Module)
+Using Blynk app to control esp8266
+	1. Install Blynk App in the ios/android store
+	2. But I find it easier to setup on Blynk's webpage so create an acount at https://blynk.io/ if you dso not have one and sign in
+	3. make a new template (side tab -> template)
+	4. under template, go to datastream and in the top right, click "+ New Datastream". Select virtual pin, since we will be using these virtual buttons on the app to control the lamp.
+		a. for now, name the button based on what you want the button to do. In my case I have set buttons controlling led color. For example you can have "Red_Button" and assign it a unique pin. Set its range and defualt value. 
+	5. Youc an connect blynk app to your esp8266 by powering on the esp8266. In the blynk app, go to "Add New Device". Follow instructions to pair.
+	6. Once paired, select the template we just created and setup the onscreen button layout to your design. 
+
 	
