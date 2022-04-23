@@ -37,5 +37,38 @@ Using Blynk app to control esp8266
 		a. for now, name the button based on what you want the button to do. In my case I have set buttons controlling led color. For example you can have "Red_Button" and assign it a unique pin. Set its range and defualt value. 
 	5. Youc an connect blynk app to your esp8266 by powering on the esp8266. In the blynk app, go to "Add New Device". Follow instructions to pair.
 	6. Once paired, select the template we just created and setup the onscreen button layout to your design. 
+Setup Arduino IDE to operate blynk app
+	The following snippet is an example layout/template of what is needed
+		#define BLYNK_TEMPLATE_ID "TMPLGGD1XheI"
+		#define BLYNK_DEVICE_NAME "RGB Button"
+		#define BLYNK_AUTH_TOKEN "Sqa9ms-0zZV1HKWXG0mvrjq6bBpYRLHA"
 
+		#define analogPin A0 //ESP8266 Analog Pin ADC0 = A0
+
+		#define BLYNK_PRINT Serial
+
+		#include <ESP8266WiFi.h>
+		#include <BlynkSimpleEsp8266.h>
+
+		char auth[] = BLYNK_AUTH_TOKEN;
+
+		char ssid[] = ""; //WiFi Name
+		char pass[] = ""; //WiFi Password
+
+		#include <Adafruit_NeoPixel.h>
+		
+	The section:
+		#define BLYNK_TEMPLATE_ID "TMPLGGD1XheI"
+		#define BLYNK_DEVICE_NAME "RGB Button"
+		#define BLYNK_AUTH_TOKEN "Sqa9ms-0zZV1HKWXG0mvrjq6bBpYRLHA"
+	should be grabbed from blynk, under info tab in firmware configurations, when you created the template, 
+	there will be a template ID and a device ID. Copy that info. 
+	You can find the authentication token when you sync your esp8266 board with the blynk app. When this
+	is done, the new esp8266 board will appear as one of the devices listed. Click into the device and go
+	to the Device info tab. Under firmware configurations will be the authenticaton token. You can also grab
+	the template and device id from here as well.
 	
+	The other important part here is:
+		char ssid[] = ""; //WiFi Name
+		char pass[] = ""; //WiFi Password
+	fill out in the quotes the wifi name for ssid, and the wifi password for pass. This how blynk will connect to your wifi.
