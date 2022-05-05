@@ -72,3 +72,7 @@ Setup Arduino IDE to operate blynk app
 		char ssid[] = ""; //WiFi Name
 		char pass[] = ""; //WiFi Password
 	fill out in the quotes the wifi name for ssid, and the wifi password for pass. This how blynk will connect to your wifi.
+	
+	
+Notes:
+Use mac_address to grab mac address of esp8266 board. This is useful if you need access from complex wide wifi or school wifi. You may need to add the board as a trusted device.
