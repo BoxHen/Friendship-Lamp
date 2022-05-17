@@ -73,6 +73,51 @@ Setup Arduino IDE to operate blynk app
 		char pass[] = ""; //WiFi Password
 	fill out in the quotes the wifi name for ssid, and the wifi password for pass. This how blynk will connect to your wifi.
 	
+Notes of code for lamp:
+Implemented a touch sensor by using pieces of aluminum tape on the top cover plate of lamp. The aluminum tape is then wired to the analog pin A0. When you touch the tape, the value changes which is what we take advantage of to change the color of lamp on press
+	adcValue = analogRead(analogPin); // Read the Analog Input value
+	//Serial.print("ADC Value = ");
+	//Serial.println(adcValue);
+	if(adcValue>60){
+		colState += 1;
+	//---------case statement to cycle through colors---------
+	if(colState == 1){ // red
+		pixels.fill(pixels.Color(255, 0, 0));
+		pixels.show();
+		delay(200);
+	}
+    if(colState == 2){ // pink
+		pixels.fill(pixels.Color(255, 51, 255));
+		pixels.show();
+		delay(200);
+    }
+    if(colState == 3){ // blue
+		pixels.fill(pixels.Color(0, 0, 255));
+		pixels.show();
+		delay(200);
+    }
+    if(colState == 4){ // Green
+		pixels.fill(pixels.Color(0, 255, 0));
+		pixels.show();
+		delay(200);
+    }
+    if(colState == 5){ // Yellow
+		pixels.fill(pixels.Color(255, 255, 0));
+		pixels.show();
+		delay(200);
+    }
+    if(colState == 6){ // orange
+		pixels.fill(pixels.Color(255, 140, 0));
+		pixels.show();
+		delay(200);
+    }
+    if(colState == 7){ // off
+		pixels.fill(pixels.Color(0, 0, 0));
+		pixels.show();
+		colState = 0; //reset color state val to restart cycle
+		delay(200);
+    }
+	
 	
 Notes:
 Use mac_address to grab mac address of esp8266 board. This is useful if you need access from complex wide wifi or school wifi. You may need to add the board as a trusted device.
