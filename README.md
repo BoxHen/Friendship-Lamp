@@ -73,7 +73,7 @@ Setup Arduino IDE to operate blynk app
 		char pass[] = ""; //WiFi Password
 	fill out in the quotes the wifi name for ssid, and the wifi password for pass. This how blynk will connect to your wifi.
 	
-Notes of code for lamp:
+Notes for lamp code:
 Implemented a touch sensor by using pieces of aluminum tape on the top cover plate of lamp. The aluminum tape is then wired to the analog pin A0. When you touch the tape, the value changes which is what we take advantage of to change the color of lamp on press
 	adcValue = analogRead(analogPin); // Read the Analog Input value
 	//Serial.print("ADC Value = ");
@@ -118,6 +118,17 @@ Implemented a touch sensor by using pieces of aluminum tape on the top cover pla
 		delay(200);
     }
 	
+blynk app works using this code like this:
+	BLYNK_WRITE(V5)//Orange - button press
+	{
+	  if(param.asInt()==1){
+		pixels.fill(pixels.Color(255, 140, 0));
+		pixels.show();
+	  }
+	}
 	
+	Here we will have to set the virtual button (V5 in this case) to a button in the blynk app. When that virtual button is pressed on the app, this piece of code executes. I use this to set a specific color
+
+
 Notes:
 Use mac_address to grab mac address of esp8266 board. This is useful if you need access from complex wide wifi or school wifi. You may need to add the board as a trusted device.
