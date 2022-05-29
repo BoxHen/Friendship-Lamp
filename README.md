@@ -129,6 +129,26 @@ blynk app works using this code like this:
 	
 	Here we will have to set the virtual button (V5 in this case) to a button in the blynk app. When that virtual button is pressed on the app, this piece of code executes. I use this to set a specific color
 
+This portion control the rgb selector on the app
+	BLYNK_WRITE(V6)//rgb control - R
+	{
+	  red_val = param.asInt();
+	  RGB_Flag = true;
+	}
+
+	BLYNK_WRITE(V7)//rgb control - G
+	{
+	  green_val = param.asInt();
+	  RGB_Flag = true;
+	}
+
+	BLYNK_WRITE(V8)//rgb control - B
+	{
+	  blue_val = param.asInt();
+	  RGB_Flag = true;
+	}
+	
+	The virtual buttons V6, V7, V8 are mapped accordingly and the values are stored vars.
 
 Notes:
 Use mac_address to grab mac address of esp8266 board. This is useful if you need access from complex wide wifi or school wifi. You may need to add the board as a trusted device.
