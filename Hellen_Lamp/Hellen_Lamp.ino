@@ -1,8 +1,6 @@
-#define BLYNK_TEMPLATE_ID "TMPLGGD1XheI"
-#define BLYNK_DEVICE_NAME "RGB Button"
-#define BLYNK_AUTH_TOKEN "WUsujc4i59v0DjZlzG1yycONsxgcpUTn"
-
-#define analogPin A0 //ESP8266 Analog Pin ADC0 = A0
+#define BLYNK_TEMPLATE_ID ""
+#define BLYNK_DEVICE_NAME ""
+#define BLYNK_AUTH_TOKEN ""
 
 #define BLYNK_PRINT Serial
 
@@ -11,16 +9,12 @@
 
 char auth[] = BLYNK_AUTH_TOKEN;
 
-//char ssid[] = "NETGEAR35";       //WiFi Name
-//char pass[] = "livelyviolet813"; //WiFi Password
-char ssid[] = "Single Digits - Residents"; //WiFi Name
+char ssid[] = ""; //WiFi Name
 char pass[] = ""; //WiFi Password
 
 #include <Adafruit_NeoPixel.h>
 //--------------------------------------------------------------------------
 bool RGB_Flag = false; // flag for rgb lamp control - only executes rgb loop on true flag
-int adcValue  = 0;     // Variable to store Output of ADC 
-int colState  = 0;     // Variable to keep track of color state based on physical touch sensor
 int red_val   = 0;     // R
 int green_val = 0;     // G
 int blue_val  = 0;     // B
@@ -143,50 +137,6 @@ void loop() {
     RGB_Flag = false;
   }
 
-  adcValue = analogRead(analogPin); // Read the Analog Input value
-  Serial.print("ADC Value = ");
-  Serial.println(adcValue);
-  if(adcValue>35){
-    colState += 1;
-    //---------case statement to cycle through colors---------
-    if(colState == 1){ // red
-      pixels.fill(pixels.Color(255, 0, 0));
-      pixels.show();
-      delay(200);
-    }
-    if(colState == 2){ // pink
-      pixels.fill(pixels.Color(255, 51, 255));
-      pixels.show();
-      delay(200);
-    }
-    if(colState == 3){ // blue
-      pixels.fill(pixels.Color(0, 0, 255));
-      pixels.show();
-      delay(200);
-    }
-    if(colState == 4){ // Green
-      pixels.fill(pixels.Color(0, 255, 0));
-      pixels.show();
-      delay(200);
-    }
-    if(colState == 5){ // Yellow
-      pixels.fill(pixels.Color(255, 255, 0));
-      pixels.show();
-      delay(200);
-    }
-    if(colState == 6){ // orange
-      pixels.fill(pixels.Color(255, 140, 0));
-      pixels.show();
-      delay(200);
-    }
-    if(colState == 7){ // off
-      pixels.fill(pixels.Color(0, 0, 0));
-      pixels.show();
-      colState = 0; //reset color state val to restart cycle
-      delay(200);
-    }
-    delay(150); // wait between colState counter increment
-  }
   delay(100);
   
   Blynk.run();
