@@ -87,24 +87,22 @@ BLYNK_WRITE(V5)//Orange - button press
     pixels.show();
   }
 }
-//--------------------------------------------------------------------------
-BLYNK_WRITE(V6)//rgb control - R
-{
-  red_val = param.asInt();
-  RGB_Flag = true;
-}
-
-BLYNK_WRITE(V7)//rgb control - G
-{
-  green_val = param.asInt();
-  RGB_Flag = true;
-}
-
-BLYNK_WRITE(V8)//rgb control - B
-{
-  blue_val = param.asInt();
-  RGB_Flag = true;
-}
+/*--------------------------------------------------------------------------
+RGB custom control through blynk "zeRGBa":
+  V6 is used for red value control
+  V7 is used for green value control
+  V8 is used for blue value control
+  we used "zeRGBa" blynk app to control custom rgb setting for our lamp. the "zeRGBa" setting is set to SPLIT, 
+  where each of the rgb values are sent separately. Upon using "zeRGBa" it will set and send Red, green, blue 
+  values in that order. We will take advantage of blue being sent last and update the lamp color there. I did 
+  this instead of using the MERGE version of "zeRGBa", where the message consists of a array of values because
+  the neopixel does not update physically. There is documentation of the timing of the neopixel being strict 
+  and my theory is that the MERGE option for "zeRGBa" is interfering with the timing of the neopixel.
+--------------------------------------------------------------------------*/
+BLYNK_WRITE(V6){ red_val   = param.asInt(); } //rgb control - Red
+BLYNK_WRITE(V7){ green_val = param.asInt(); } //rgb control - Green
+BLYNK_WRITE(V8){ blue_val  = param.asInt();   //rgb control - Blue
+                 AdjustBrightness(red_val, green_val, blue_val);}
 //--------------------------------------------------------------------------
 BLYNK_WRITE(V9)//On/Off button
 {
@@ -126,19 +124,5 @@ void setup()
 }
 
 void loop() {
-  if(RGB_Flag){
-    for(int i=0;i<numLEDs;i++){
-      // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-      pixels.setPixelColor(i, pixels.Color(red_val,green_val,blue_val)); // Moderately bright green color.
-      delay(10);
-    }  
-    pixels.show();
-    Serial.println("in rgb");
-    RGB_Flag = false;
-  }
-
-  delay(100);
-  
   Blynk.run();
-  
 }
