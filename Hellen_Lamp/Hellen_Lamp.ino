@@ -15,78 +15,52 @@ char pass[] = ""; //WiFi Password
 #include <Adafruit_NeoPixel.h>
 //--------------------------------------------------------------------------
 bool RGB_Flag = false; // flag for rgb lamp control - only executes rgb loop on true flag
+double brightness_percentage = 100;
 int red_val   = 0;     // R
 int green_val = 0;     // G
 int blue_val  = 0;     // B
 //--------------------------------------------------------------------------
-const int neo = D2; // ESP8266 pin connected to Neopixel's data pin
+const int neo = D2;     // ESP8266 pin connected to Neopixel's data pin
 const int numLEDs = 24; // replace with the number of your LEDs
-Adafruit_NeoPixel pixels(numLEDs, neo, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(numLEDs, neo, NEO_GRB + NEO_KHZ800); //Initialize neopixel ring
 
-//==========================================================================
-BLYNK_CONNECTED()
-{
-  Blynk.syncVirtual(V0);  
-  Blynk.syncVirtual(V1);  
-  Blynk.syncVirtual(V2);
-  Blynk.syncVirtual(V3);     
-  Blynk.syncVirtual(V4);  
-  Blynk.syncVirtual(V5);  
-  Blynk.syncVirtual(V6);  
-  Blynk.syncVirtual(V7);  
-  Blynk.syncVirtual(V8);  
-  Blynk.syncVirtual(V9);  
-}
-//--------------------------------------------------------------------------
-BLYNK_WRITE(V0)//Red - button press
-{
-  if(param.asInt()==1){
-    pixels.fill(pixels.Color(255, 0, 0));
-    pixels.show();
-    Serial.println("in red");
-  }
-}
+/*--------------------------------------------------------------------------
+sets up the virtual pins we will use with the blynk app
+--------------------------------------------------------------------------*/
+BLYNK_CONNECTED(){ Blynk.syncVirtual(V0); Blynk.syncVirtual(V1); Blynk.syncVirtual(V2); Blynk.syncVirtual(V3); Blynk.syncVirtual(V4); Blynk.syncVirtual(V5); Blynk.syncVirtual(V6); Blynk.syncVirtual(V7); Blynk.syncVirtual(V8); Blynk.syncVirtual(V9); }
 
-BLYNK_WRITE(V1)//Pink - button press
-{
-  if(param.asInt()==1){
-    pixels.fill(pixels.Color(255, 51, 255));
-    pixels.show();
-  }
+/*--------------------------------------------------------------------------
+Individual color buttons:
+  These are the buttons on the blynk app that will change the color upon press
+  Executes when the value of blynk virtual pins (V0-V9) changes (blynk server sends the current Virtual Pin 
+  value as a parameter). We will update the rgb var so this way, the last press is stored. This is cool
+  since when we update the brightness slider, the lamp will update colors immediately
+--------------------------------------------------------------------------*/
+BLYNK_WRITE(V0){                                 //Red    - button press 
+  red_val = 255; green_val = 0; blue_val = 0; 
+  AdjustBrightness(red_val, green_val, blue_val); 
 }
-
-BLYNK_WRITE(V2)//Blue - button press
-{
-  if(param.asInt()==1){
-    pixels.fill(pixels.Color(0, 0, 255));
-    pixels.show();
-  }
+BLYNK_WRITE(V1){                                 //Pink   - button press
+  red_val = 255; green_val = 51; blue_val = 255; 
+  AdjustBrightness(red_val, green_val, blue_val); 
+}
+BLYNK_WRITE(V2){                                 //Blue   - button press
+  red_val = 0; green_val = 0; blue_val = 255; 
+  AdjustBrightness(red_val, green_val, blue_val); 
+}
+BLYNK_WRITE(V3){                                 //Green  - button press
+  red_val = 0; green_val = 255; blue_val = 0; 
+  AdjustBrightness(red_val, green_val, blue_val); 
+}
+BLYNK_WRITE(V4){                                 //Yellow - button press
+  red_val = 255; green_val = 255; blue_val = 0; 
+  AdjustBrightness(red_val, green_val, blue_val); 
+}
+BLYNK_WRITE(V5){                                 //Orange - button press
+  red_val = 255; green_val = 140; blue_val = 0; 
+  AdjustBrightness(red_val, green_val, blue_val); 
 }
 
-
-BLYNK_WRITE(V3)//Green - button press
-{
-  if(param.asInt()==1){
-    pixels.fill(pixels.Color(0, 255, 0));
-    pixels.show();
-  }
-}
-
-BLYNK_WRITE(V4)//Yellow - button press
-{
-  if(param.asInt()==1){
-    pixels.fill(pixels.Color(255, 255, 0));
-    pixels.show();
-  }
-}
-
-BLYNK_WRITE(V5)//Orange - button press
-{
-  if(param.asInt()==1){
-    pixels.fill(pixels.Color(255, 140, 0));
-    pixels.show();
-  }
-}
 /*--------------------------------------------------------------------------
 RGB custom control through blynk "zeRGBa":
   V6 is used for red value control
@@ -103,26 +77,58 @@ BLYNK_WRITE(V6){ red_val   = param.asInt(); } //rgb control - Red
 BLYNK_WRITE(V7){ green_val = param.asInt(); } //rgb control - Green
 BLYNK_WRITE(V8){ blue_val  = param.asInt();   //rgb control - Blue
                  AdjustBrightness(red_val, green_val, blue_val);}
-//--------------------------------------------------------------------------
-BLYNK_WRITE(V9)//On/Off button
-{
-  if(param.asInt()==1){
-    pixels.clear();
-    pixels.show();
-  }
-}
-//==========================================================================
 
+/*--------------------------------------------------------------------------
+Brightness control:
+  This will adjust the brightness of the lamp upon the slider in the blynk app being changed. The slider has a 
+  value from 0 to 100. This a percentage(stored as a deciaml), that we will multiply with the rgb value to 
+  determine brightness.
+  We will also update the lamp color at the end so that a change to the slider value immediately changes the 
+  lamp color 
+--------------------------------------------------------------------------*/
+BLYNK_WRITE(V9){ 
+  brightness_percentage = param.asDouble()/100.0; 
+  AdjustBrightness(red_val, green_val, blue_val);
+}
+
+/*--------------------------------------------------------------------------
+On/Off Button:
+  clears the neopixel lights which will turn the lamp off
+--------------------------------------------------------------------------*/
+BLYNK_WRITE(V10){ //On/Off button
+  red_val = 0; green_val = 0; blue_val = 0;
+  pixels.clear();
+  pixels.show() ; 
+} 
+                 
+/*--------------------------------------------------------------------------
+AdjustBrightness:
+  Parameters:
+            redValue   : represents the red value in rgb
+            greenValue : represents the green value in rgb
+            blueValue  : represents the blue value in rgb
+  return:
+            N/A (void return)
+  Comments:
+            Will fill the lamp with the known rgb value, but apply the set brightness level(percentage). Multiplies 
+            the desired percentage of brightness by the rgb value
+--------------------------------------------------------------------------*/
+void AdjustBrightness(int redValue, int greenValue, int blueValue){
+  pixels.fill(pixels.Color( (redValue*brightness_percentage), (greenValue*brightness_percentage), (blueValue*brightness_percentage) ));
+  pixels.show();
+}
+
+//==========================================================================
 void setup()
 { 
   Serial.begin(115200); // Initialize serial communication at 115200
   pixels.begin();
-  pixels.setBrightness(50);
+  pixels.setBrightness(100);
   pixels.show(); // Initialize all pixels to 'off'
   
   Blynk.begin(auth, ssid, pass);
 }
 
 void loop() {
-  Blynk.run();
+  Blynk.run(); 
 }
